@@ -1,0 +1,21 @@
+name: Build WDA
+on:
+workflow_dispatch:
+jobs:
+build:
+runs-on: macos-13
+steps:
+• uses: actions/checkout@v4
+• name: Switch branch
+  run: git checkout ios-16-and-below
+• name: Change Bundle ID
+  run: sed -i '' "s/com.facebook.WebDriverAgentRunner/${{ secrets.BUNDLE_ID }}/g" WebDriverAgent.xcodeproj/project.pbxproj
+• name: Build
+  run: xcodebuild build-for-testing -project WebDriverAgent.xcodeproj -scheme WebDriverAgentRunner -destination generic/platform=iOS CODE_SIGN_IDENTITY="Apple Development" DEVELOPMENT_TEAM=
+{{ secrets.BUNDLE_ID }}
+• name: Package
+  run: mkdir Payload && cp -r build/Release-iphoneos/WebDriverAgentRunner-Runner.app Payload/ && zip -r WDA.ipa Payload
+• uses: actions/upload-artifact@v4
+  with:
+  name: WDA
+  path: WDA.ipa
