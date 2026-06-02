@@ -1,4 +1,4 @@
-name: Build WDA for iOS15
+name: Build WDA for iOS15.8
 on:
   workflow_dispatch:
 jobs:
